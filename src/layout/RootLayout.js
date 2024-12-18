@@ -1,9 +1,11 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import cart from '../assest/images/cart.svg'
 
 
 export default function RootLayout() {
+    const navigate = useNavigate();
+
   return (
         <div>
             <header className="p-2 text-primary bg-primary border border-primary">
@@ -42,8 +44,8 @@ export default function RootLayout() {
                                 </form>
 
                                 <div className="text-end">
-                                    <button type="button" className="btn btn-outline-light me-2">Login</button>
-                                    <button type="button" className="btn btn-warning">Sign-up</button>
+                                    <button type="button" className="btn btn-outline-light me-2" onClick={() => navigate("/login")}>Login</button>
+                                    <button type="button" className="btn btn-warning" onClick={() => navigate("/signup")}>Sign-up</button>
                                 </div>
                             </div>
                         </div>

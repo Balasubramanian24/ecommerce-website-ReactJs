@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Category = () => {
   const { CategoryName } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -28,6 +33,22 @@ const Category = () => {
 
     fetchProducts();
   }, [CategoryName]);
+
+  // Handle Add to Cart button click
+    const handleAddToCart = (product) => {
+      addToCart(product); // Add product to cart
+  
+      // Show toast notification after adding to cart
+      toast.success(`${product.title} added to your cart!`, {
+        position: "top-center",
+        autoClose: 3000, // Duration for the toast
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    };
 
   return (
     <div className="container">
@@ -58,7 +79,10 @@ const Category = () => {
                   >
                     View Product
                   </Link>
-                  <button className="btn btn-outline-primary px-3 mx-5">
+                  <button 
+                    className="btn btn-outline-primary px-3 mx-5"
+                    onClick={() => handleAddToCart(product)}
+                  >
                     Add to Cart
                   </button>
                 </div>
@@ -71,6 +95,7 @@ const Category = () => {
           No products found for this category.
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

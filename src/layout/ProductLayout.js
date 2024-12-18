@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
+import { useCart } from "../context/CartContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProductLayout = () => {
   const [products, setProducts] = useState([]);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -16,6 +20,22 @@ const ProductLayout = () => {
 
     loadProducts();
   }, []);
+
+  //handle Add to cart
+  const handleAddToCart = (product) => {
+    addToCart(product); //Add product to cart
+
+    //Toast notification
+    toast.success(`${product.title} added to your Cart.!`, {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });  
+  };
 
   return (
     <div className="container mt-5">
@@ -36,9 +56,6 @@ const ProductLayout = () => {
                 <p className="card-text">
                   <strong>Price:</strong> ${product.price}
                 </p>
-                {/* <Link to={`/products/${product.id}`} className="btn btn-primary">
-                  View Product
-                </Link> */}
                 <a
                   href={`/products/${product.id}`}
                   target="_blank"
@@ -47,13 +64,18 @@ const ProductLayout = () => {
                 >
                   View Product
                 </a>
-                <button className="btn btn-outline-primary px-3 mx-5">Add to Cart</button>
+                <button 
+                  className="btn btn-outline-primary m-3 ml-sm-2"
+                  onClick={() => handleAddToCart(product)}    
+                >
+                  Add to Cart
+                </button>
               </div>
             </div>
           </div>
         ))}
       </div>
-      {/* <Outlet /> */}
+      <ToastContainer />
     </div>
   );
 };

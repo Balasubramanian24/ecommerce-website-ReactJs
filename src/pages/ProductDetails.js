@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProductDetails = () => {
-  const { id } = useParams(); 
-  const [product, setProduct] = useState(null);
-  const [error, setError] = useState(null); 
+const { id } = useParams(); //get products from URL
+const [product, setProduct] = useState(null);
+const [error, setError] = useState(null); 
+const { addToCart } = useCart(); //Destructure addToCart from CartContext
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -23,6 +27,30 @@ const ProductDetails = () => {
     fetchProduct();
   }, [id]);
 
+//handle Add to Cart button
+  const handleAddToCart = () => {
+    if(product) {
+      addToCart({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.thumbnail,
+      });
+
+//showing Toast notification
+      toast.success(`${product.title} added to your cart.!`, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+//Handle Error or Load state
 
   if (error) {
     return <div className="text-center mt-5">Error: {error}</div>;
@@ -54,9 +82,14 @@ const ProductDetails = () => {
           <p>
             <strong>Stock:</strong> {product.stock} units available
           </p>
-          <button className="btn btn-primary btn-md">Add to Cart</button>
+          <button 
+            className="btn btn-primary btn-md"
+            onClick={handleAddToCart}
+            >
+            Add to Cart</button>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
